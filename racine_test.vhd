@@ -14,6 +14,11 @@ architecture racine_test_arch of racine_test is
     signal result : std_logic_vector(31 downto 0);
     signal done : std_logic;
     constant clk_period : time := 50 ns;
+    signal A_5b : std_logic_vector(9 downto 0);
+    signal start_5b : std_logic;
+    signal raz_5b : std_logic;
+    signal result_5b : std_logic_vector(4 downto 0);
+    signal done_5b : std_logic;
 begin
     r : entity work.racine
     port map
@@ -24,6 +29,20 @@ begin
         start => start,
         result => result,
         done => done
+    );
+    r_5b : entity work.racine
+    generic map
+    (
+        n => 5
+    )
+    port map
+    (
+        A => A_5b,
+        clk => clk,
+        raz => raz_5b,
+        start => start_5b,
+        result => result_5b,
+        done => done_5b
     );
 
     process
@@ -81,8 +100,23 @@ begin
         assert unsigned(result) = 65535 report "sqrt(4294967295)" severity error;
         start <= '0';
         wait for 2*clk_period + 10 ns;
-
         finish;
+    end process;
+
+    process
+    begin
+        raz_5b <= '1';
+        start_5b <= '0';
+        A_5b <= (others => '0');
+        wait for 20 ns;
+        raz_5b <= '0';
+
+        A_5b <= std_logic_vector(to_signed(16, 10));
+        start_5b <= '1';
+        wait for clk_period;
+        wait until done_5b = '1';
+        assert unsigned(result_5b) = 4 report "sqrt(16) en 5b" severity error;
+        wait;
     end process;
 
 end architecture;
