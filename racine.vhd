@@ -53,9 +53,9 @@ begin
                 when INIT => i <= to_unsigned(n-1,n); D <= unsigned(A); R <= (others => '0'); Z <= (others => '0');
                 when CALC =>
                     if R >= 0 then
-                        R_temp := R+R+R+R + signed(shift_right(D, 2*n - 2)) - shift_left(signed(resize(Z, 2*n)), 2) - to_signed(1, 2*n);
+                        R_temp := shift_left(R,2) + signed(shift_right(D, 2*n - 2)) - shift_left(resize(Z, 2*n), 2) - 1;
                     else
-                        R_temp := R+R+R+R + signed(shift_right(D, 2*n - 2)) + shift_left(signed(resize(Z, 2*n)), 2) + to_signed(3, 2*n);
+                        R_temp := shift_left(R,2) + signed(shift_right(D, 2*n - 2)) + shift_left(resize(Z, 2*n), 2) + 3;
                     end if;
                     if R_temp >= 0 then
                         Z_temp := shift_left(Z, 1) + 1;
