@@ -1,6 +1,5 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 
 entity complement_a_deux is
     generic
@@ -16,7 +15,21 @@ entity complement_a_deux is
 end entity;
 
 architecture complement_a_deux_archi of complement_a_deux is
+    signal comp2 : std_logic_vector(n-1 downto 0);
 begin
-    sortie <= std_logic_vector(-signed(entree)) when enable = '1' or enable = 'H' else entree;
+    ai : entity work.additionneur
+    generic map
+    (
+        n => n
+    )
+    port map
+    (
+        x => not entree,
+        y => (n-1 downto 1 => '0') & "1",
+        resultat => comp2,
+        retenue => open
+    );
+
+    sortie <= comp2 when enable = '1' or enable = 'H' else entree;
 end architecture;
 
