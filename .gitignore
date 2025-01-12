@@ -18,8 +18,8 @@ additionneur_soustracteur_test
 additionneur_cascadable
 additionneur
 complement_a_deux
-reg_decg_test
-reg_decg
+reg_decg_accu_test
+reg_decg_accu
 bascule_d
 uc
 uc_test
