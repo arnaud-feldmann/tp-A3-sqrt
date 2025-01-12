@@ -43,8 +43,11 @@ begin
         enable <= '1';
         wait until clk = '1';
         wait for 10 ns;
-        raz<= '0';
         assert sortie = "00000" report "remise à zéro avant set" severity error;
+        wait for 10 ns;
+        wait until clk = '1';
+        raz<= '0';
+        assert sortie = "00000" report "ne se remplit pas si raz" severity error;
         wait until clk = '1';
         wait for 10 ns;
         assert sortie = "11001" report "Chargement" severity error;
