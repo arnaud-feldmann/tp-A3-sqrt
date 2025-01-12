@@ -9,12 +9,12 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Installer GHDL et gcc-riscv64
+    - name: Installer GHDL
       run: sudo apt-get update && sudo apt-get install -y ghdl
 
     - name: Analyser and compiler le VHDL
