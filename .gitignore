@@ -11,7 +11,8 @@
 *.ghw
 *.vcd
 qar_info.json
-racine_test
+racine_behavorial_test
+racine_struct_test
 racine
 additionneur_soustracteur
 additionneur_soustracteur_test

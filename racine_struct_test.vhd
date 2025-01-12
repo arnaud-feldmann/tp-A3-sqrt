@@ -3,10 +3,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use std.env.finish;
 
-entity racine_test is
+entity racine_struct_test is
     end entity;
 
-architecture racine_test_arch of racine_test is
+architecture racine_struct_test_arch of racine_struct_test is
     signal A : std_logic_vector(63 downto 0);
     signal clk : std_logic;
     signal raz : std_logic;
@@ -20,7 +20,7 @@ architecture racine_test_arch of racine_test is
     signal result_5b : std_logic_vector(4 downto 0);
     signal done_5b : std_logic;
 begin
-    r : entity work.racine
+    r : entity work.racine(racine_struct)
     port map
     (
         A => A,
@@ -30,7 +30,7 @@ begin
         result => result,
         done => done
     );
-    r_5b : entity work.racine
+    r_5b : entity work.racine(racine_struct)
     generic map
     (
         n => 5
