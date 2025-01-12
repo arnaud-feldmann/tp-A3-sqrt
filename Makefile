@@ -1,6 +1,7 @@
-TESTS=racine_test
+TESTS=racine_test additionneur_soustracteur_test
 
 DEPENDENCIES_racine_test=racine.vhd racine_test.vhd
+DEPENDENCIES_additionneur_soustracteur_test=additionneur_cascadable.vhd additionneur.vhd complement_a_deux.vhd additionneur_soustracteur.vhd additionneur_soustracteur_test.vhd
 
 GHDLFLAGS= --std=08 --workdir=work
 
