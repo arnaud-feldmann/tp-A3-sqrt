@@ -74,3 +74,106 @@ begin
     end process;
 end racine_behavorial;
 
+architecture racine_struct of racine is
+    signal D : std_logic_vector(2*n - 1 downto 0);
+    signal R : std_logic_vector(2*n-1 downto 0);
+    signal Z : std_logic_vector(n-1 downto 0);
+    signal init : std_logic;
+    signal calcul : std_logic;
+    signal done_temp : std_logic;
+    signal D_dec : std_logic_vector(2*n - 1 downto 0);
+    signal Z_extend : std_logic_vector(2*n -1 downto 0);
+    signal Z_plus : std_logic_vector(2*n -1 downto 0);
+    signal R_add : std_logic_vector(2*n-1 downto 0);
+    signal R_entree : std_logic_vector(R'range);
+    signal un_ou_zero : std_logic_vector(n -1 downto 0);
+    signal z_entree : std_logic_vector(Z'range);
+    signal D_entree : std_logic_vector(D'range);
+begin
+    done <= done_temp;
+    result <= Z;
+
+    -- uc
+    uc_inst : entity work.uc
+    generic map
+    (
+        n => n + 1
+    )
+    port map
+    (
+        start => start,
+        raz => raz,
+        clk => clk,
+        init => init,
+        calcul => calcul,
+        done => done_temp
+    );
+
+    -- R
+    D_dec <= (2*n-1 downto 2 => '0') & D(2*n-1 downto 2*n-2);
+    Z_extend <= (2*n-1 downto n => '0') & Z;
+    Z_plus <= (z_extend(2*n-3 downto 0) & "01") when R(R'high) = '0' else (z_extend(2*n-3 downto 0) & "11");
+    R_add_calc : entity work.additionneur_soustracteur
+    generic map
+    (
+        n => 2*n
+    )
+    port map
+    (
+        x => D_dec,
+        y => Z_plus,
+        soustract_y => not R(R'high),
+        resultat => R_add
+    );
+    R_entree <= (others => '0') when init = '1' or init = 'H' else R_add;
+    r_reg : entity work.reg_decg_accu
+    generic map
+    (
+        n => 2*n,
+        d => 2
+    )
+    port map
+    (
+        entree => R_entree,
+        enable => init or calcul,
+        raz => raz or not start,
+        clk => not clk,
+        sortie => R
+    );
+
+    -- Z
+    un_ou_zero <= (n-1 downto 1 => '0') & "1" when R(R'high) = '0' else (n - 1 downto 0 => '0');
+    z_entree <= (others => '0') when init = '1' or init = 'H' else un_ou_zero;
+    z_reg : entity work.reg_decg_accu
+    generic map
+    (
+        n => n,
+        d => 1
+    )
+    port map
+    (
+        entree => z_entree,
+        enable => init or calcul,
+        raz => raz or not start,
+        clk => clk,
+        sortie => Z
+    );
+
+    --D
+    D_entree <= A when init = '1' or init = 'H' else (others => '0');
+    D_reg : entity work.reg_decg_accu
+    generic map
+    (
+        n => 2*n,
+        d => 2
+    )
+    port map
+    (
+        entree => D_entree,
+        enable => init or calcul,
+        raz => raz or not start,
+        clk => not clk,
+        sortie => D
+    );
+
+end racine_struct;

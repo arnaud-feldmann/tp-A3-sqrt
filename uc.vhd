@@ -13,6 +13,7 @@ entity uc is
         raz : in std_logic;
         clk : in std_logic;
         init : out std_logic;
+        calcul : out std_logic;
         done : out std_logic
     );
 end entity;
@@ -39,6 +40,7 @@ begin
             present <= ATTENDRE;
             init <= '0';
             done <= '0';
+            calcul <= '0';
         elsif rising_edge(clk)
         then
             present <= futur;
@@ -49,7 +51,8 @@ begin
                     i_temp := i - 1;
                     i <= i_temp;
                     init <= '0';
-                when FIN => done <= '1';
+                    calcul <= '1';
+                when FIN => done <= '1'; calcul <= '0';
             end case;
         end if;
     end process;

@@ -1,8 +1,8 @@
 TESTS=racine_test additionneur_soustracteur_test reg_decg_accu_test uc_test
 
-DEPENDENCIES_racine_test=racine.vhd racine_test.vhd
+DEPENDENCIES_racine_test=additionneur_cascadable.vhd additionneur.vhd complement_a_deux.vhd additionneur_soustracteur.vhd bascule_d.vhd reg_decg_accu.vhd uc.vhd racine.vhd racine_test.vhd
 DEPENDENCIES_additionneur_soustracteur_test=additionneur_cascadable.vhd additionneur.vhd complement_a_deux.vhd additionneur_soustracteur.vhd additionneur_soustracteur_test.vhd
-DEPENDENCIES_reg_decg_accu_test=bascule_d.vhd reg_decg_accu.vhd reg_decg_accu_test.vhd
+DEPENDENCIES_reg_decg_accu_test=additionneur_cascadable.vhd additionneur.vhd bascule_d.vhd reg_decg_accu.vhd reg_decg_accu_test.vhd
 DEPENDENCIES_uc_test=uc.vhd uc_test.vhd
 
 GHDLFLAGS= --std=08 --workdir=work
