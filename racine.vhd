@@ -98,7 +98,7 @@ begin
     uc_inst : entity work.uc
     generic map
     (
-        n => n + 1
+        n => n
     )
     port map
     (

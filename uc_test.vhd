@@ -45,7 +45,6 @@ begin
         wait for 20 ns;
         raz <= '0';
         start <= '1';
-        wait until rising_edge(clk);
         wait for 10 ns;
         assert init = '0' report "not init before init" severity error;
         assert done = '0' report "not done before init" severity error;

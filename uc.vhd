@@ -24,6 +24,21 @@ architecture uc_behavorial of uc is
     signal present, futur : etat;
     signal i : unsigned(n-1 downto 0);
 begin
+    process (present) is
+    begin
+        att <= '0';
+        init <= '0';
+        done <= '0';
+        calcul <= '0';
+        case present is
+            when ATTENDRE => done <= '0'; att <= '1';
+            when INITIALISATION => init <= '1'; att <= '0';
+            when CALC =>
+                init <= '0';
+                calcul <= '1';
+            when FIN => done <= '1'; calcul <= '0';
+        end case;
+    end process;
     process (present, i, start) is
     begin
         futur <= present;
@@ -39,23 +54,15 @@ begin
     begin
         if raz then
             present <= ATTENDRE;
-            att <= '0';
-            init <= '0';
-            done <= '0';
-            calcul <= '0';
         elsif rising_edge(clk)
         then
             present <= futur;
-            case present is
-                when ATTENDRE => done <= '0'; att <= '1';
-                when INITIALISATION => init <= '1';i <= to_unsigned(n-1,n); att <= '0';
-                when CALC =>
-                    i_temp := i - 1;
-                    i <= i_temp;
-                    init <= '0';
-                    calcul <= '1';
-                when FIN => done <= '1'; calcul <= '0';
-            end case;
+            if present = INITIALISATION then
+                i <= to_unsigned(n-1,n);
+            elsif present = CALC then
+                i_temp := i - 1;
+                i <= i_temp;
+            end if;
         end if;
     end process;
 end uc_behavorial;
