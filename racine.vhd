@@ -19,7 +19,7 @@ entity racine is
     );
 end entity;
 
-architecture racine_behavorial of racine is
+architecture Behavorial of racine is
     type etat is (ATTENDRE, INIT, CALC, FIN);
     signal present, futur : etat;
     signal i : unsigned(n-1 downto 0);
@@ -72,9 +72,9 @@ begin
             end case;
         end if;
     end process;
-end racine_behavorial;
+end Behavorial;
 
-architecture racine_struct of racine is
+architecture Structural of racine is
     signal D : std_logic_vector(2*n - 1 downto 0);
     signal R : std_logic_vector(2*n-1 downto 0);
     signal Z : std_logic_vector(n-1 downto 0);
@@ -176,4 +176,5 @@ begin
         sortie => D
     );
 
-end racine_struct;
+end Structural;
+

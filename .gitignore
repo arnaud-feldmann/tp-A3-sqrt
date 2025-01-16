@@ -12,8 +12,10 @@
 *.vcd
 qar_info.json
 racine_behavorial_test
-racine_struct_test
+racine_structural_test
+racine_combinatorial_test
 racine
+racinecomb
 additionneur_soustracteur
 additionneur_soustracteur_test
 additionneur_cascadable
