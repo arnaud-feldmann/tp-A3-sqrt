@@ -10,6 +10,7 @@ architecture uc_test_arch of uc_test is
     signal clk : std_logic;
     signal raz : std_logic;
     signal start : std_logic;
+    signal att : std_logic;
     signal init : std_logic;
     signal done : std_logic;
     constant clk_period : time := 50 ns;
@@ -23,6 +24,7 @@ begin
     (
         clk => clk,
         raz => raz,
+        att => att,
         start => start,
         init => init,
         done => done
@@ -47,8 +49,10 @@ begin
         wait for 10 ns;
         assert init = '0' report "not init before init" severity error;
         assert done = '0' report "not done before init" severity error;
+        assert att = '1' report "att during att" severity error;
         wait until rising_edge(clk); -- Init
         wait for 10 ns;
+        assert att = '0' report "not att during not att" severity error;
         assert init = '1' report "init during init" severity error;
         assert done = '0' report "not done during init" severity error;
         wait until rising_edge(clk); --4

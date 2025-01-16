@@ -12,6 +12,7 @@ entity uc is
         start : in std_logic;
         raz : in std_logic;
         clk : in std_logic;
+        att : out std_logic;
         init : out std_logic;
         calcul : out std_logic;
         done : out std_logic
@@ -38,6 +39,7 @@ begin
     begin
         if raz then
             present <= ATTENDRE;
+            att <= '0';
             init <= '0';
             done <= '0';
             calcul <= '0';
@@ -45,8 +47,8 @@ begin
         then
             present <= futur;
             case present is
-                when ATTENDRE => done <= '0';
-                when INITIALISATION => init <= '1';i <= to_unsigned(n-1,n);
+                when ATTENDRE => done <= '0'; att <= '1';
+                when INITIALISATION => init <= '1';i <= to_unsigned(n-1,n); att <= '0';
                 when CALC =>
                     i_temp := i - 1;
                     i <= i_temp;

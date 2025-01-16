@@ -78,6 +78,7 @@ architecture Structural of racine is
     signal D : std_logic_vector(2*n - 1 downto 0);
     signal R : std_logic_vector(2*n-1 downto 0);
     signal Z : std_logic_vector(n-1 downto 0);
+    signal att : std_logic;
     signal init : std_logic;
     signal calcul : std_logic;
     signal done_temp : std_logic;
@@ -104,6 +105,7 @@ begin
         start => start,
         raz => raz,
         clk => clk,
+        att => att,
         init => init,
         calcul => calcul,
         done => done_temp
@@ -136,7 +138,7 @@ begin
     (
         entree => R_entree,
         enable => init or calcul,
-        raz => raz or not start,
+        raz => raz or att,
         clk => not clk,
         sortie => R
     );
@@ -154,7 +156,7 @@ begin
     (
         entree => z_entree,
         enable => init or calcul,
-        raz => raz or not start,
+        raz => raz or att,
         clk => clk,
         sortie => Z
     );
@@ -171,7 +173,7 @@ begin
     (
         entree => D_entree,
         enable => init or calcul,
-        raz => raz or not start,
+        raz => raz or att,
         clk => not clk,
         sortie => D
     );
