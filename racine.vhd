@@ -83,11 +83,10 @@ architecture Structural of racine is
     signal calcul : std_logic;
     signal done_temp : std_logic;
     signal Z_plus : std_logic_vector(R'range);
-    signal R_entree_pre_comp2 : std_logic_vector(R'range);
+    signal Z_plus_comp2 : std_logic_vector(R'range);
+    signal R_add : std_logic_vector(R'range);
     signal R_entree : std_logic_vector(R'range);
-    signal un_ou_zero : std_logic_vector(0 downto 0);
     signal z_entree : std_logic_vector(0 downto 0);
-    signal D_entree : std_logic_vector(D'range);
 begin
     done <= done_temp;
     result <= Z;
@@ -120,28 +119,40 @@ begin
     (
         entree => Z_plus,
         enable => not R(R'high),
-        sortie => R_entree_pre_comp2
+        sortie => Z_plus_comp2
     );
-    R_entree <= (others => '0') when init = '1' or init = 'H' else R_entree_pre_comp2;
+    addi : entity work.additionneur
+    generic map
+    (
+        n => R'length
+    )
+    port map
+    (
+        x => R(R'high - 2 downto 0) & D(D'high downto D'high - 1),
+        y => Z_plus_comp2,
+        resultat => R_add,
+        retenue => open
+    );
+    R_entree <= (others => '0') when init = '1' or init = 'H' else R_add;
     r_reg : entity work.reg_decg_accu
     generic map
     (
         n => R'length,
-        d => 2
+        d => 0
     )
     port map
     (
-        entree_add => R_entree,
-        entree_concat => D(D'high downto D'high - 1),
-        enable => init or calcul,
+        entree_chargement => R_entree,
+        entree_concat => "",
+        enable_chargement => init or calcul,
+        enable_decalage => '0',
         raz => raz or att,
         clk => not clk,
         sortie => R
     );
 
     -- Z
-    un_ou_zero <= "1" when R(R'high) = '0' else "0";
-    z_entree <= "0" when init = '1' or init = 'H' else un_ou_zero;
+    z_entree <= "1" when R(R'high) = '0' else "0";
     z_reg : entity work.reg_decg_accu
     generic map
     (
@@ -150,16 +161,16 @@ begin
     )
     port map
     (
-        entree_add => (others => '0'),
         entree_concat => z_entree,
-        enable => init or calcul,
+        entree_chargement => (others => '0'),
+        enable_chargement => init,
+        enable_decalage => calcul,
         raz => raz or att,
         clk => clk,
         sortie => Z
     );
 
     --D
-    D_entree <= A when init = '1' or init = 'H' else (others => '0');
     D_reg : entity work.reg_decg_accu
     generic map
     (
@@ -168,9 +179,10 @@ begin
     )
     port map
     (
-        entree_add => D_entree,
         entree_concat => "00",
-        enable => init or calcul,
+        entree_chargement => A,
+        enable_chargement => init,
+        enable_decalage => calcul,
         raz => raz or att,
         clk => not clk,
         sortie => D

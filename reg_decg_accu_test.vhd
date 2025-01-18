@@ -7,9 +7,10 @@ entity reg_decg_accu_test is
     end entity;
 
 architecture reg_decg_accu_test_arch of reg_decg_accu_test is
-    signal entree_add : std_logic_vector(4 downto 0);
     signal entree_concat : std_logic_vector(1 downto 0);
-    signal enable : std_logic;
+    signal entree_chargement : std_logic_vector(4 downto 0);
+    signal enable_chargement : std_logic;
+    signal enable_decalage : std_logic;
     signal raz: std_logic;
     signal clk : std_logic;
     signal sortie : std_logic_vector(4 downto 0);
@@ -22,9 +23,10 @@ begin
     )
     port map
     (
-        entree_add => entree_add,
         entree_concat => entree_concat,
-        enable => enable,
+        entree_chargement => entree_chargement,
+        enable_chargement => enable_chargement,
+        enable_decalage => enable_decalage,
         raz => raz,
         clk => clk,
         sortie => sortie
@@ -40,10 +42,11 @@ begin
 
     process
     begin
-        entree_add <= "11001";
         entree_concat <= "00";
+        entree_chargement <= "11001";
         raz <= '1';
-        enable <= '1';
+        enable_chargement <= '1';
+        enable_decalage <= '1';
         wait until clk = '1';
         wait for 10 ns;
         assert sortie = "00000" report "remise à zéro avant set" severity error;
@@ -54,22 +57,17 @@ begin
         wait until clk = '1';
         wait for 10 ns;
         assert sortie = "11001" report "Chargement" severity error;
-        entree_add <= "00001";
+        enable_chargement <= '0';
         wait until clk = '1';
         wait for 10 ns;
-        assert sortie = "00101" report "Premier décalage" severity error;
-        wait until clk = '1';
-        wait for 10 ns;
-        assert sortie = "10101" report "Deuxième décalage" severity error;
-        entree_add <= "00111";
-        wait until clk = '1';
-        wait for 10 ns;
-        assert sortie = "11011" report "Troisième décalage" severity error;
-        entree_add <= "00111";
+        assert sortie = "00100" report "Premier décalage" severity error;
         entree_concat <= "10";
         wait until clk = '1';
         wait for 10 ns;
-        assert sortie = "10101" report "Décalage avec concaténation" severity error;
+        assert sortie = "10010" report "Deuxième décalage" severity error;
+        wait until clk = '1';
+        wait for 10 ns;
+        assert sortie = "01010" report "Troisième décalage" severity error;
         finish;
     end process;
 
