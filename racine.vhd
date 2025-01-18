@@ -85,8 +85,8 @@ architecture Structural of racine is
     signal Z_plus : std_logic_vector(R'range);
     signal R_entree_pre_comp2 : std_logic_vector(R'range);
     signal R_entree : std_logic_vector(R'range);
-    signal un_ou_zero : std_logic_vector(Z'range);
-    signal z_entree : std_logic_vector(Z'range);
+    signal un_ou_zero : std_logic_vector(0 downto 0);
+    signal z_entree : std_logic_vector(0 downto 0);
     signal D_entree : std_logic_vector(D'range);
 begin
     done <= done_temp;
@@ -140,8 +140,8 @@ begin
     );
 
     -- Z
-    un_ou_zero <= (n-1 downto 1 => '0') & "1" when R(R'high) = '0' else (n - 1 downto 0 => '0');
-    z_entree <= (others => '0') when init = '1' or init = 'H' else un_ou_zero;
+    un_ou_zero <= "1" when R(R'high) = '0' else "0";
+    z_entree <= "0" when init = '1' or init = 'H' else un_ou_zero;
     z_reg : entity work.reg_decg_accu
     generic map
     (
@@ -150,8 +150,8 @@ begin
     )
     port map
     (
-        entree_add => z_entree,
-        entree_concat => "0",
+        entree_add => (others => '0'),
+        entree_concat => z_entree,
         enable => init or calcul,
         raz => raz or att,
         clk => clk,
