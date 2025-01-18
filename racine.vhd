@@ -22,9 +22,9 @@ end entity;
 architecture Behavorial of racine is
     type etat is (ATTENDRE, INIT, CALC, FIN);
     signal present, futur : etat;
-    signal i : unsigned(n-1 downto 0);
+    signal i : unsigned(n - 1 downto 0);
     signal D : unsigned(2*n - 1 downto 0);
-    signal R : signed(n+2 downto 0);
+    signal R : signed(n downto 0);
     signal Z : signed(n-1 downto 0);
 begin
     process (present, i, start) is
@@ -55,7 +55,7 @@ begin
                     if R >= 0 then
                         R_temp := (resize(R, R'length - 2) & signed(resize(shift_right(D, 2*n - 2), 2))) - (resize(Z, R'length - 2) & "01");
                     else
-                        R_temp := (resize(R, R'length - 2) & signed(resize(shift_right(D, 2*n - 2), 2))) +(resize(Z, R'length - 2) & "11");
+                        R_temp := (resize(R, R'length - 2) & signed(resize(shift_right(D, 2*n - 2), 2))) + (resize(Z, R'length - 2) & "11");
                     end if;
                     if R_temp >= 0 then
                         Z_temp := shift_left(Z, 1) + 1;
@@ -76,7 +76,7 @@ end Behavorial;
 
 architecture Structural of racine is
     signal D : std_logic_vector(2*n - 1 downto 0);
-    signal R : std_logic_vector(n + 1 downto 0);
+    signal R : std_logic_vector(n downto 0);
     signal Z : std_logic_vector(n - 1 downto 0);
     signal att : std_logic;
     signal init : std_logic;

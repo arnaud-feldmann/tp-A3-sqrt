@@ -19,7 +19,7 @@ begin
     process (A) is
         variable A_valide : boolean;
         variable D_temp : unsigned(2*n - 1 downto 0);
-        variable R_temp : signed(n + 2 downto 0);
+        variable R_temp : signed(n downto 0);
         variable Z_temp : signed(n - 1 downto 0);
     begin
         result <= (others => '0');
