@@ -24,7 +24,7 @@ architecture Behavorial of racine is
     signal present, futur : etat;
     signal i : unsigned(n-1 downto 0);
     signal D : unsigned(2*n - 1 downto 0);
-    signal R : signed(2*n-1 downto 0);
+    signal R : signed(n+2 downto 0);
     signal Z : signed(n-1 downto 0);
 begin
     process (present, i, start) is
@@ -53,9 +53,9 @@ begin
                 when INIT => i <= to_unsigned(n-1,n); D <= unsigned(A); R <= (others => '0'); Z <= (others => '0');
                 when CALC =>
                     if R >= 0 then
-                        R_temp := shift_left(R,2) + signed(shift_right(D, 2*n - 2)) - shift_left(resize(Z, 2*n), 2) - 1;
+                        R_temp := shift_left(R,2) + signed(resize(shift_right(D, 2*n - 2), R'length)) - shift_left(resize(Z, R'length), 2) - 1;
                     else
-                        R_temp := shift_left(R,2) + signed(shift_right(D, 2*n - 2)) + shift_left(resize(Z, 2*n), 2) + 3;
+                        R_temp := shift_left(R,2) + signed(resize(shift_right(D, 2*n - 2), R'length)) + shift_left(resize(Z, R'length), 2) + 3;
                     end if;
                     if R_temp >= 0 then
                         Z_temp := shift_left(Z, 1) + 1;
@@ -76,18 +76,18 @@ end Behavorial;
 
 architecture Structural of racine is
     signal D : std_logic_vector(2*n - 1 downto 0);
-    signal R : std_logic_vector(2*n-1 downto 0);
-    signal Z : std_logic_vector(n-1 downto 0);
+    signal R : std_logic_vector(n + 1 downto 0);
+    signal Z : std_logic_vector(n - 1 downto 0);
     signal att : std_logic;
     signal init : std_logic;
     signal calcul : std_logic;
     signal done_temp : std_logic;
-    signal D_dec : std_logic_vector(2*n - 1 downto 0);
-    signal Z_extend : std_logic_vector(2*n -1 downto 0);
-    signal Z_plus : std_logic_vector(2*n -1 downto 0);
-    signal R_add : std_logic_vector(2*n-1 downto 0);
+    signal D_dec : std_logic_vector(R'range);
+    signal Z_extend : std_logic_vector(R'range);
+    signal Z_plus : std_logic_vector(R'range);
+    signal R_add : std_logic_vector(R'range);
     signal R_entree : std_logic_vector(R'range);
-    signal un_ou_zero : std_logic_vector(n -1 downto 0);
+    signal un_ou_zero : std_logic_vector(Z'range);
     signal z_entree : std_logic_vector(Z'range);
     signal D_entree : std_logic_vector(D'range);
 begin
@@ -112,13 +112,13 @@ begin
     );
 
     -- R
-    D_dec <= (2*n-1 downto 2 => '0') & D(2*n-1 downto 2*n-2);
-    Z_extend <= (2*n-1 downto n => '0') & Z;
-    Z_plus <= (z_extend(2*n-3 downto 0) & "01") when R(R'high) = '0' else (z_extend(2*n-3 downto 0) & "11");
+    D_dec <= (D_dec'high downto 2 => '0') & D(2*n-1 downto 2*n-2);
+    Z_extend <= (Z_extend'high  downto n => '0') & Z;
+    Z_plus <= (z_extend(Z_extend'high - 2 downto 0) & "01") when R(R'high) = '0' else (z_extend(Z_extend'high - 2 downto 0) & "11");
     R_add_calc : entity work.additionneur_soustracteur
     generic map
     (
-        n => 2*n
+        n => R'length
     )
     port map
     (
@@ -131,7 +131,7 @@ begin
     r_reg : entity work.reg_decg_accu
     generic map
     (
-        n => 2*n,
+        n => R'length,
         d => 2
     )
     port map

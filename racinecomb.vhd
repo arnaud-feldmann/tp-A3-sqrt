@@ -19,7 +19,7 @@ begin
     process (A) is
         variable A_valide : boolean;
         variable D_temp : unsigned(2*n - 1 downto 0);
-        variable R_temp : signed(2*n - 1 downto 0);
+        variable R_temp : signed(n + 2 downto 0);
         variable Z_temp : signed(n - 1 downto 0);
     begin
         result <= (others => '0');
@@ -35,9 +35,9 @@ begin
             Z_temp := (others => '0');
             for i in n - 1 downto 0 loop
                 if R_temp >= 0 then
-                    R_temp := shift_left(R_temp,2) + signed(shift_right(D_temp, 2*n - 2)) - shift_left(resize(Z_temp, 2*n), 2) - 1;
+                    R_temp := shift_left(R_temp,2) + signed(resize(shift_right(D_temp, 2*n - 2), R_temp'length)) - shift_left(resize(Z_temp, R_temp'length), 2) - 1;
                 else
-                    R_temp := shift_left(R_temp,2) + signed(shift_right(D_temp, 2*n - 2)) + shift_left(resize(Z_temp, 2*n), 2) + 3;
+                    R_temp := shift_left(R_temp,2) + signed(resize(shift_right(D_temp, 2*n - 2), R_temp'length)) + shift_left(resize(Z_temp, R_temp'length), 2) + 3;
                 end if;
                 if R_temp >= 0 then
                     Z_temp := shift_left(Z_temp, 1) + 1;
