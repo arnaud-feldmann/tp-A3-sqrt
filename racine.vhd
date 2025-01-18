@@ -86,7 +86,6 @@ architecture Structural of racine is
     signal Z_plus_comp2 : std_logic_vector(R'range);
     signal R_add : std_logic_vector(R'range);
     signal R_entree : std_logic_vector(R'range);
-    signal z_entree : std_logic_vector(0 downto 0);
 begin
     done <= done_temp;
     result <= Z;
@@ -152,7 +151,6 @@ begin
     );
 
     -- Z
-    z_entree <= "1" when R(R'high) = '0' else "0";
     z_reg : entity work.reg_decg_accu
     generic map
     (
@@ -161,7 +159,7 @@ begin
     )
     port map
     (
-        entree_concat => z_entree,
+        entree_concat => (0 downto 0 => not R(R'high)),
         entree_chargement => (others => '0'),
         enable_chargement => init,
         enable_decalage => calcul,
