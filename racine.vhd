@@ -82,10 +82,8 @@ architecture Structural of racine is
     signal init : std_logic;
     signal calcul : std_logic;
     signal done_temp : std_logic;
-    signal D_dec : std_logic_vector(R'range);
-    signal Z_extend : std_logic_vector(R'range);
     signal Z_plus : std_logic_vector(R'range);
-    signal R_add : std_logic_vector(R'range);
+    signal R_entree_pre_comp2 : std_logic_vector(R'range);
     signal R_entree : std_logic_vector(R'range);
     signal un_ou_zero : std_logic_vector(Z'range);
     signal z_entree : std_logic_vector(Z'range);
@@ -112,22 +110,19 @@ begin
     );
 
     -- R
-    D_dec <= (D_dec'high downto 2 => '0') & D(2*n-1 downto 2*n-2);
-    Z_extend <= (Z_extend'high  downto n => '0') & Z;
-    Z_plus <= (z_extend(Z_extend'high - 2 downto 0) & "01") when R(R'high) = '0' else (z_extend(Z_extend'high - 2 downto 0) & "11");
-    R_add_calc : entity work.additionneur_soustracteur
+    Z_plus <= (Z(R'high - 2 downto 0) & "01") when R(R'high) = '0' else (Z(R'high - 2 downto 0) & "11");
+    comp2 : entity work.complement_a_deux
     generic map
     (
         n => R'length
     )
     port map
     (
-        x => D_dec,
-        y => Z_plus,
-        soustract_y => not R(R'high),
-        resultat => R_add
+        entree => Z_plus,
+        enable => not R(R'high),
+        sortie => R_entree_pre_comp2
     );
-    R_entree <= (others => '0') when init = '1' or init = 'H' else R_add;
+    R_entree <= (others => '0') when init = '1' or init = 'H' else R_entree_pre_comp2;
     r_reg : entity work.reg_decg_accu
     generic map
     (
@@ -137,7 +132,7 @@ begin
     port map
     (
         entree_add => R_entree,
-        entree_concat => "00",
+        entree_concat => D(D'high downto D'high - 1),
         enable => init or calcul,
         raz => raz or att,
         clk => not clk,
