@@ -9,7 +9,8 @@ entity reg_decg_accu is
     );
     port
     (
-        entree : in std_logic_vector(n-1 downto 0);
+        entree_add : in std_logic_vector(n-1 downto 0);
+        entree_concat : in std_logic_vector(d-1 downto 0);
         enable : in std_logic;
         raz : in std_logic;
         clk : in std_logic;
@@ -18,10 +19,10 @@ entity reg_decg_accu is
 end entity;
 
 architecture reg_decg_accu of reg_decg_accu is
-    signal entree_bis : std_logic_vector(entree'range); 
+    signal entree_add_bis : std_logic_vector(entree_add'range); 
     signal sortie_bis : std_logic_vector(sortie'high + d downto 0); 
 begin
-    sortie_bis(d - 1 downto 0) <= (others => '0');
+    sortie_bis(d - 1 downto 0) <= entree_concat;
     a : entity work.additionneur
     generic map
     (
@@ -30,18 +31,18 @@ begin
     port map
     (
         x => sortie_bis(n-1 downto 0),
-        y => entree,
-        resultat => entree_bis,
+        y => entree_add,
+        resultat => entree_add_bis,
         retenue => open
     );
-    f : for i in entree_bis'range generate
+    f : for i in entree_add_bis'range generate
         u : entity work.bascule_d
         port map
         (
             raz => raz,
             h => clk,
             chargement => enable,
-            entree => entree_bis(i),
+            entree => entree_add_bis(i),
             sortie => sortie_bis(i+d)
         );
     end generate;

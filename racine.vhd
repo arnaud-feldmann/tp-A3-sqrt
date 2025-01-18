@@ -136,7 +136,8 @@ begin
     )
     port map
     (
-        entree => R_entree,
+        entree_add => R_entree,
+        entree_concat => "00",
         enable => init or calcul,
         raz => raz or att,
         clk => not clk,
@@ -154,7 +155,8 @@ begin
     )
     port map
     (
-        entree => z_entree,
+        entree_add => z_entree,
+        entree_concat => "0",
         enable => init or calcul,
         raz => raz or att,
         clk => clk,
@@ -171,7 +173,8 @@ begin
     )
     port map
     (
-        entree => D_entree,
+        entree_add => D_entree,
+        entree_concat => "00",
         enable => init or calcul,
         raz => raz or att,
         clk => not clk,
