@@ -35,9 +35,9 @@ begin
             Z_temp := (others => '0');
             for i in n - 1 downto 0 loop
                 if R_temp >= 0 then
-                    R_temp := shift_left(R_temp,2) + signed(resize(shift_right(D_temp, 2*n - 2), R_temp'length)) - signed(resize(Z_temp, R_temp'length - 2) & "01");
+                    R_temp := (resize(R_temp, R_temp'length - 2) & signed(resize(shift_right(D_temp, 2*n - 2), 2))) - (signed(resize(Z_temp, R_temp'length - 2) & "01"));
                 else
-                    R_temp := shift_left(R_temp,2) + signed(resize(shift_right(D_temp, 2*n - 2), R_temp'length)) + signed(resize(Z_temp, R_temp'length - 2) & "11");
+                    R_temp := (resize(R_temp, R_temp'length - 2) & signed(resize(shift_right(D_temp, 2*n - 2), 2))) + (signed(resize(Z_temp, R_temp'length - 2) & "11"));
                 end if;
                 if R_temp >= 0 then
                     Z_temp := shift_left(Z_temp, 1) + 1;
