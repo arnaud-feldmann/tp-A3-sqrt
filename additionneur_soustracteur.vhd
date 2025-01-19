@@ -25,7 +25,7 @@ begin
     port map
     (
         x => x,
-        y => y xor soustract_y,
+        y => y xor (n-1 downto 0 => soustract_y),
         retenue_0 => soustract_y,
         resultat => resultat,
         retenue => open
