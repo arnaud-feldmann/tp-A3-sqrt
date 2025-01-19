@@ -10,6 +10,7 @@ entity additionneur is
     (
         x : in std_logic_vector(n - 1 downto 0);
         y : in std_logic_vector(n - 1 downto 0);
+        retenue_0 : in std_logic;
         resultat : out std_logic_vector(n - 1 downto 0);
         retenue : out std_logic
     );
@@ -19,7 +20,7 @@ architecture additionneur_archi of additionneur is
     signal resultat_prec_v, retenue_prec_v : std_logic_vector(n downto 0);
 begin
     resultat_prec_v(0) <= '0';
-    retenue_prec_v(0) <= '0';
+    retenue_prec_v(0) <= retenue_0;
     g : for i in n - 1 downto 0
     generate
         u : entity work.additionneur_cascadable port map
