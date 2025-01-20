@@ -107,7 +107,7 @@ begin
     );
 
     -- R
-    Z_plus <= (Z(R'high - 2 downto 0) & "01") when R(R'high) = '0' else (Z(R'high - 2 downto 0) & "11");
+    Z_plus <= (Z(R'high - 2 downto 0) & "01") when not R(R'high) else (Z(R'high - 2 downto 0) & "11");
     addi : entity work.additionneur_soustracteur
     generic map
     (
@@ -120,7 +120,7 @@ begin
         soustract_y => not R(R'high),
         resultat => R_add
     );
-    R_futur <= (others => '0') when init = '1' or init = 'H' else R_add;
+    R_futur <= (others => '0') when init else R_add;
     r_reg : entity work.reg_decg_accu
     generic map
     (
