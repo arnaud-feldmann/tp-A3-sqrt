@@ -84,7 +84,7 @@ architecture Structural of racine is
     signal done_temp : std_logic;
     signal Z_plus : std_logic_vector(R'range);
     signal R_add : std_logic_vector(R'range);
-    signal R_entree : std_logic_vector(R'range);
+    signal R_futur : std_logic_vector(R'range);
 begin
     done <= done_temp;
     result <= Z;
@@ -107,7 +107,7 @@ begin
     );
 
     -- R
-    Z_plus <= (Z(R'high - 2 downto 0) & "01") when R(R'high) = '0' else (Z(R'high - 2 downto 0) & "11");
+    Z_plus <= (Z(R'high - 2 downto 0) & "01") when not R(R'high) else (Z(R'high - 2 downto 0) & "11");
     addi : entity work.additionneur_soustracteur
     generic map
     (
@@ -120,7 +120,7 @@ begin
         soustract_y => not R(R'high),
         resultat => R_add
     );
-    R_entree <= (others => '0') when init = '1' or init = 'H' else R_add;
+    R_futur <= (others => '0') when init else R_add;
     r_reg : entity work.reg_decg_accu
     generic map
     (
@@ -129,12 +129,12 @@ begin
     )
     port map
     (
-        entree_chargement => R_entree,
+        entree_chargement => R_futur,
         entree_concat => "",
         enable_chargement => init or calcul,
         enable_decalage => '0',
         raz => raz or att,
-        clk => not clk,
+        clk => clk,
         sortie => R
     );
 
@@ -147,7 +147,7 @@ begin
     )
     port map
     (
-        entree_concat => (0 downto 0 => not R(R'high)),
+        entree_concat => (0 downto 0 => not R_futur(R_futur'high)),
         entree_chargement => (others => '0'),
         enable_chargement => init,
         enable_decalage => calcul,
@@ -170,7 +170,7 @@ begin
         enable_chargement => init,
         enable_decalage => calcul,
         raz => raz or att,
-        clk => not clk,
+        clk => clk,
         sortie => D
     );
 
